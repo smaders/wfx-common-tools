@@ -106,12 +106,10 @@ jobs:
 
       - name: Create Github Release
         id: create_release
-        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{github.ref}}
-          generate_release_notes : true
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create ${{ needs.check-tag-details.outputs.tag_name }} dist/* --title ${{ needs.check-tag-details.outputs.tag_name }} --generate-notes
 
   pypi-publish:
     runs-on: ubuntu-latest
