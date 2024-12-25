@@ -74,7 +74,7 @@ jobs:
         run: |
           NEW_VERSION=${{ needs.check-tag-details.outputs.new_version }}
           LATEST_VERSION=$latest_previous_version
-          if [ "$(printf '%s\n' "$LATEST_VERSION" "$NEW_VERSION" | sort -rV | head -n 1)" != "$NEW_VERSION" ] || [ "$NEW_VERSION" == "$LATEST_VERSION" ]; then
+          if [ "$(printf '%s\n' "$LATEST_VERSION" "$NEW_VERSION" | sort -V | head -n 1)" != "$NEW_VERSION" ] || [ "$NEW_VERSION" == "$LATEST_VERSION" ]; then
             echo "The new version $NEW_VERSION is not greater than the latest version $LATEST_VERSION on PyPI."
             exit 1
           else
