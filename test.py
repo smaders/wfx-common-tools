@@ -4,8 +4,10 @@ import serial
 import signal
 import argparse
 import serial.tools.list_ports
+import threading
 
 dut = None
+stop_event = threading.Event()
 
 def list_serial_ports():
     """Return a list of available serial ports with descriptions."""
@@ -88,8 +90,13 @@ def send_cli_commands(serial_port, commands):
 
 def wait_for_ctrl_c_and_run(signal_handler, text):
     print("Press Ctrl+C to {:s}".format(text))
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.pause()  # Wait 
+    stop_event.clear()
+    try:
+        while not stop_event.is_set():
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        stop_event.set()
+    signal_handler() 
 
 def wait_no_action(sig, frame):
     pass
@@ -97,7 +104,7 @@ def wait_no_action(sig, frame):
 def wait():
     wait_for_ctrl_c_and_run(wait_no_action, "continue")
 
-def modulation_stop_handler(sig, frame):
+def modulation_stop_handler():
     global dut
     print("\nCtrl+C detected. Stop modulation")
     dut.tx_stop()
@@ -112,7 +119,7 @@ def modulation(regulatory_mode, channel, tx_mode, tx_power_reduction = 0.0, tx_f
     dut.tx_start('continuous')
     wait_for_ctrl_c_and_run(modulation_stop_handler, "stop modulation")
     
-def tone_stop_handler(sig, frame):
+def tone_stop_handler():
     global dut
     print("\nCtrl+C detected. Stop Tone")
     dut.tone_stop()

@@ -36,6 +36,8 @@ This repository contains WFX tools which are not platform-specific,
 
 ## Installation
 
+**The tools is tested with Python 3.13.3**
+
 It would be a best practice to install packages in a virtual environment using pip & venv for different projects as the guideline [here](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/). 
 
 Basically, some basic steps as the following commands:
